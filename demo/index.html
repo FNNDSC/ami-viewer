@@ -28,7 +28,7 @@
       <demo-snippet>
 
         <template is="dom-bind" id="viewer">
-          <ami-viewer data="[[data]]"></ami-viewer>
+          <ami-viewer data="[[data]]" orientation="[[orientation]]"> </ami-viewer>
         </template>
 
         <script>
@@ -39,6 +39,7 @@
 
           var loader = document.querySelector('#viewer');
           loader.data = data;
+          loader.orientation = 0;
 
         </script>
 

@@ -78,6 +78,12 @@
         animationFrameID :{
           type: Number,
           value: -1
+        },
+
+        orientation: {
+          type: Number,
+          value: 0,
+          observer: '_orientationChanged'
         }
 
       },
@@ -96,11 +102,10 @@
 
         }
 
-        window.console.log( this.series );
         // create helper!
         this.stack = this.series[0].stack[0];
         this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
-        // stackHelper.orientation = 2;
+        this.stackHelper.orientation = this.orientation;
         // stackHelper.index = 56;
 
         // tune bounding box
@@ -170,11 +175,13 @@
       animate: function( ){
 
         this.animationFrameID = window.requestAnimationFrame( this.animate.bind(this) );
+
+        this.controls.update();
         this.renderer.render( this.scene, this.camera );
 
       },
 
-      _onWindowResize: function(){
+      _onWindowResize: function( evt){
       
         this.camera.canvas = {
           width: this.$.container.clientWidth,
@@ -184,6 +191,26 @@
         this.camera.fitBox(2);
 
         this.renderer.setSize(this.$.container.clientWidth, this.$.container.clientHeight);
+
+      },
+
+      _orientationChanged: function( evt ){
+
+        if( this.orientation < 0 || this.orientation > 2 ){
+
+          window.console.log('invalid orientation: ' + this.orientation);
+          window.console.log('setting orientation to 0');
+          this.orientation = 0;
+
+        }
+
+        if( !this.stackHelper ){
+
+          return;
+
+        }
+
+        this.stackHelper.orientation = this.orientation;
 
       }
 
