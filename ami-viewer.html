@@ -1,0 +1,192 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../ami-loader/ami-loader.html">
+
+<dom-module id="ami-viewer">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+        position: relative;
+      }
+
+      #container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+    </style>
+
+    <ami-loader id="#loader" data="{{data}}" series="{{series}}"></ami-loader>
+
+    <div id="container"></div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'ami-viewer',
+
+      properties: {
+
+        data: {
+          type: Array,
+          value: []
+        },
+
+        series: {
+          type: Array,
+          value: [],
+          observer: '_seriesChanged'
+        },
+
+        stack: {
+          type: Object,
+          value: null
+        },
+
+        stackHelper: {
+          type: Object,
+          value: null
+        },
+
+        renderer: {
+          type: Object,
+          value: null
+        },
+
+        scene: {
+          type: Object,
+          value: null
+        },
+
+        camera: {
+          type: Object,
+          value: null
+        },
+
+        init: {
+          type: Boolean,
+          value: false
+        },
+
+        animationFrameID :{
+          type: Number,
+          value: -1
+        }
+
+      },
+
+      _seriesChanged: function( evt ){
+
+        if( !this.series || this.series.length <= 0){
+
+          return;
+
+        }
+
+        if( !this.init){
+
+          this._init();
+
+        }
+
+        window.console.log( this.series );
+        // create helper!
+        this.stack = this.series[0].stack[0];
+        this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
+        // stackHelper.orientation = 2;
+        // stackHelper.index = 56;
+
+        // tune bounding box
+        this.stackHelper.bbox.visible = false;
+
+        //tune slice border
+        this.stackHelper.border.color = 0xFF9800;
+        //stackHelper.border.visible = false;
+
+        this.scene.add(this.stackHelper);
+
+        // center camera and interactor to center of bouding box
+        // for nicer experience
+        // set camera
+        var worldbb = this.stack.worldBoundingBox();
+        var lpsDims = new THREE.Vector3(
+          worldbb[1] - worldbb[0],
+          worldbb[3] - worldbb[2],
+          worldbb[5] - worldbb[4]
+        );
+
+        // box: {halfDimensions, center}
+        var bbox = {
+          center: this.stack.worldCenter().clone(),
+          halfDimensions: new THREE.Vector3(lpsDims.x + 10, lpsDims.y + 10, lpsDims.z + 10)
+        };
+
+        // init and zoom
+        var canvas = {
+            width: this.$.container.clientWidth,
+            height: this.$.container.clientHeight
+          };
+        this.camera.init(this.stack.xCosine, this.stack.yCosine, this.stack.zCosine, this.controls, bbox, canvas);
+        this.camera.fitBox(2);
+      },
+
+      _init: function( ){
+
+        // init the renderer
+        this.renderer = new THREE.WebGLRenderer({
+          antialias: true
+        });
+        this.renderer.setSize(this.$.container.offsetWidth, this.$.container.offsetHeight);
+        this.renderer.setClearColor(0x353535, 1);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.$.container.appendChild(this.renderer.domElement);
+
+        // init the scene
+        this.scene = new THREE.Scene();
+
+        // init the camera
+        this.camera = new AMI.default.Cameras.Orthographic(this.$.container.clientWidth / -2, this.$.container.clientWidth / 2, this.$.container.clientHeight / 2, this.$.container.clientHeight / -2, 0.1, 10000);
+
+        // init the controls
+        this.controls = new AMI.default.Controls.TrackballOrtho(this.camera, this.$.container);
+        this.controls.staticMoving = true;
+        this.controls.noRotate = true;
+
+        // event listeners
+        this._onWindowResize = this._onWindowResize.bind(this);
+        window.addEventListener('resize', this._onWindowResize, false);
+
+        this.init = true;
+        this.animate();
+      },
+
+      animate: function( ){
+
+        this.animationFrameID = window.requestAnimationFrame( this.animate.bind(this) );
+        this.renderer.render( this.scene, this.camera );
+
+      },
+
+      _onWindowResize: function(){
+      
+        this.camera.canvas = {
+          width: this.$.container.clientWidth,
+          height: this.$.container.clientHeight
+        };
+
+        this.camera.fitBox(2);
+
+        this.renderer.setSize(this.$.container.clientWidth, this.$.container.clientHeight);
+
+      }
+
+    });
+  </script>
+</dom-module>
