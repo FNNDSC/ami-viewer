@@ -28,7 +28,7 @@
       <demo-snippet>
 
         <template is="dom-bind" id="viewer">
-          <ami-viewer data="[[data]]" orientation="[[orientation]]"> </ami-viewer>
+          <ami-viewer data="[[data]]" orientation="[[orientation]]" index="[[index]]"> </ami-viewer>
         </template>
 
         <script>
@@ -37,9 +37,10 @@
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
-          var loader = document.querySelector('#viewer');
-          loader.data = data;
-          loader.orientation = 0;
+          var viewer = document.querySelector('#viewer');
+          viewer.data = data;
+          viewer.orientation = 0;
+          viewer.index = 0;
 
         </script>
 

@@ -84,6 +84,12 @@
           type: Number,
           value: 0,
           observer: '_orientationChanged'
+        },
+
+        index: {
+          type: Number,
+          value: 0,
+          observer: '_indexChanged'
         }
 
       },
@@ -106,7 +112,7 @@
         this.stack = this.series[0].stack[0];
         this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
         this.stackHelper.orientation = this.orientation;
-        // stackHelper.index = 56;
+        this.stackHelper.index = this.index;
 
         // tune bounding box
         this.stackHelper.bbox.visible = false;
@@ -116,30 +122,8 @@
         //stackHelper.border.visible = false;
 
         this.scene.add(this.stackHelper);
+        this._setupCamera();
 
-        // center camera and interactor to center of bouding box
-        // for nicer experience
-        // set camera
-        var worldbb = this.stack.worldBoundingBox();
-        var lpsDims = new THREE.Vector3(
-          worldbb[1] - worldbb[0],
-          worldbb[3] - worldbb[2],
-          worldbb[5] - worldbb[4]
-        );
-
-        // box: {halfDimensions, center}
-        var bbox = {
-          center: this.stack.worldCenter().clone(),
-          halfDimensions: new THREE.Vector3(lpsDims.x + 10, lpsDims.y + 10, lpsDims.z + 10)
-        };
-
-        // init and zoom
-        var canvas = {
-            width: this.$.container.clientWidth,
-            height: this.$.container.clientHeight
-          };
-        this.camera.init(this.stack.xCosine, this.stack.yCosine, this.stack.zCosine, this.controls, bbox, canvas);
-        this.camera.fitBox(2);
       },
 
       _init: function( ){
@@ -196,6 +180,8 @@
 
       _orientationChanged: function( evt ){
 
+                window.console.log('orientation changed...');
+
         if( this.orientation < 0 || this.orientation > 2 ){
 
           window.console.log('invalid orientation: ' + this.orientation);
@@ -211,7 +197,67 @@
         }
 
         this.stackHelper.orientation = this.orientation;
+        this._setupCamera();
 
+      },
+
+      _setupCamera: function(){
+
+        var worldbb = this.stack.worldBoundingBox();
+        var lpsDims = new THREE.Vector3(
+          worldbb[1] - worldbb[0],
+          worldbb[3] - worldbb[2],
+          worldbb[5] - worldbb[4]
+        );
+
+        // box: {halfDimensions, center}
+        var bbox = {
+          center: this.stack.worldCenter().clone(),
+          halfDimensions: new THREE.Vector3(lpsDims.x + 10, lpsDims.y + 10, lpsDims.z + 10)
+        };
+
+        // init and zoom
+        var canvas = {
+            width: this.$.container.clientWidth,
+            height: this.$.container.clientHeight
+          };
+
+        var first, second, last;
+
+        if( this.orientation === 0 ){
+
+          first = this.stack.xCosine;
+          second = this.stack.yCosine;
+          last = this.stack.zCosine;
+
+        }
+        else if( this.orientation === 1 ){
+
+          first = this.stack.yCosine;
+          second = this.stack.zCosine;
+          last = this.stack.xCosine;
+
+        }
+        else{
+
+          first = this.stack.zCosine;
+          second = this.stack.xCosine;
+          last = this.stack.yCosine;
+
+        }
+
+        this.camera.init(first, second, last, this.controls, bbox, canvas);
+        this.camera.fitBox(2);
+      },
+
+      _indexChanged: function( evt ){
+
+        if( !this.stackHelper ){
+          return;
+        }
+
+        this.stackHelper.index = this.index;
+        this.index = this.stackHelper.index;
       }
 
     });
