@@ -89,7 +89,14 @@
         index: {
           type: Number,
           value: 0,
+          notify: true,
           observer: '_indexChanged'
+        },
+
+        indexMax: {
+          type: Number,
+          value: 0,
+          notify: true
         },
 
         flipRows: {
@@ -124,7 +131,7 @@
         this.stack = this.series[0].stack[0];
         this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
         this.stackHelper.orientation = this.orientation;
-        this.stackHelper.index = this.index;
+        this._setupIndex();
 
         // tune bounding box
         this.stackHelper.bbox.visible = false;
@@ -205,8 +212,6 @@
 
       _orientationChanged: function( evt ){
 
-                window.console.log('orientation changed...');
-
         if( this.orientation < 0 || this.orientation > 2 ){
 
           window.console.log('invalid orientation: ' + this.orientation);
@@ -222,8 +227,33 @@
         }
 
         this.stackHelper.orientation = this.orientation;
+        this._setupIndex();
         this._setupCamera();
 
+      },
+
+      _setupIndex: function(){
+        var max = 0;
+          
+        var dimensionsIJK = this.stack.dimensionsIJK;
+        switch(this.orientation){
+          case 0:
+            max = dimensionsIJK.z - 1;
+            break;
+          case 1:
+            max = dimensionsIJK.x - 1;
+            break;
+          case 2:
+            max = dimensionsIJK.y - 1;
+            break;
+          default:
+            // do nothing!
+            break;
+        }
+
+        this.indexMax = max;
+        this.index = Math.floor( this.indexMax/2 );
+        this.stackHelper.index = this.index;
       },
 
       _setupCamera: function(){
