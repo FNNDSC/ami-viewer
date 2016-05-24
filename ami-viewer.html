@@ -113,8 +113,15 @@
 
         borderColor: {
           type: String,
-          value: '0xFF9800',
+          value: '#FF9800',
           observer: '_borderColorChanged'
+        },
+
+        angle: {
+          type: Number,
+          value: 0,
+          notify: true,
+          observer: '_angleChanged'
         }
 
       },
@@ -309,6 +316,7 @@
         }
 
         this.camera.init(first, second, last, this.controls, bbox, canvas);
+        this.camera.angle = this.angle;
         this.camera.fitBox(2);
       },
 
@@ -333,6 +341,7 @@
         }
 
         this.camera.invertRows();
+        this.angle = this.camera.angle;
       },
 
       _flipColumnsChanged: function( evt){
@@ -344,6 +353,18 @@
         }
 
         this.camera.invertColumns();
+        this.angle = this.camera.angle;
+      },
+
+      _angleChanged: function( evt){
+
+        if( !this.camera ){
+
+          return;
+
+        }
+
+        this.camera.angle = this.angle;
       },
 
       _borderColorChanged: function( evt ){

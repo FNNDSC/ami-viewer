@@ -131,7 +131,30 @@
 
           var viewer = document.querySelector('#colors');
           viewer.data = data;
-          viewer.borderColor = '0x98FF00';
+          viewer.borderColor = '#98FF00';
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Angle</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="angle">
+          <ami-viewer data="[[data]]" angle="[[angle]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var data = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#angle');
+          viewer.data = data;
+          viewer.angle = 66;
 
         </script>
 
