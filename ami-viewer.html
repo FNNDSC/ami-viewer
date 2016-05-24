@@ -90,7 +90,19 @@
           type: Number,
           value: 0,
           observer: '_indexChanged'
-        }
+        },
+
+        flipRows: {
+          type: Boolean,
+          value: false,
+          observer: '_flipRowsChanged'
+        },
+
+        flipColumns: {
+          type: Boolean,
+          value: false,
+          observer: '_flipColumnsChanged'
+        },
 
       },
 
@@ -123,6 +135,19 @@
 
         this.scene.add(this.stackHelper);
         this._setupCamera();
+
+        // flips
+        if( this.flipRows ){
+
+          this.camera.invertRows();
+
+        }
+
+        if( this.flipColumns ){
+
+          this.camera.invertColumns();
+
+        }
 
       },
 
@@ -258,6 +283,28 @@
 
         this.stackHelper.index = this.index;
         this.index = this.stackHelper.index;
+      },
+
+      _flipRowsChanged: function( evt){
+
+        if( !this.camera ){
+
+          return;
+
+        }
+
+        this.camera.invertRows();
+      },
+
+      _flipColumnsChanged: function( evt){
+
+        if( !this.camera ){
+
+          return;
+
+        }
+
+        this.camera.invertColumns();
       }
 
     });

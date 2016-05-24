@@ -28,7 +28,7 @@
       <demo-snippet>
 
         <template is="dom-bind" id="viewer">
-          <ami-viewer data="[[data]]" orientation="[[orientation]]" index="[[index]]"> </ami-viewer>
+          <ami-viewer data="[[data]]" orientation="[[orientation]]" index="[[index]]" flip-rows="[[flipRows]]" flip-columns="[[flipColumns]]"> </ami-viewer>
         </template>
 
         <script>
@@ -39,8 +39,77 @@
 
           var viewer = document.querySelector('#viewer');
           viewer.data = data;
-          viewer.orientation = 0;
-          viewer.index = 0;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Index</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="index">
+          <ami-viewer data="[[data]]" index="[[index]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var data = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#index');
+          viewer.data = data;
+          viewer.index = 2;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Orientation</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="orientation">
+          <ami-viewer data="[[data]]" orientation="[[orientation]]" index="[[index]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var data = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#orientation');
+          viewer.data = data;
+          viewer.orientation = 1;
+          viewer.index = 50;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Flip rows and columns</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="flips">
+          <ami-viewer data="[[data]]" index="[[index]]" flip-rows="flipRows" flip-columns="flipColumns"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var data = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#flips');
+          viewer.data = data;
+          viewer.flipRows = true;
+          viewer.flipColumns = false;
 
         </script>
 
