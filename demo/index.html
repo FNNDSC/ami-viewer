@@ -73,7 +73,7 @@
       <demo-snippet>
 
         <template is="dom-bind" id="orientation">
-          <ami-viewer data="[[data]]" orientation="[[orientation]]" index="[[index]]"> </ami-viewer>
+          <ami-viewer data="[[data]]" orientation="[[orientation]]"> </ami-viewer>
         </template>
 
         <script>
@@ -96,7 +96,7 @@
       <demo-snippet>
 
         <template is="dom-bind" id="flips">
-          <ami-viewer data="[[data]]" index="[[index]]" flip-rows="flipRows" flip-columns="flipColumns"> </ami-viewer>
+          <ami-viewer data="[[data]]" flip-rows="flipRows" flip-columns="flipColumns"> </ami-viewer>
         </template>
 
         <script>
@@ -109,6 +109,29 @@
           viewer.data = data;
           viewer.flipRows = true;
           viewer.flipColumns = false;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Border color</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="colors">
+          <ami-viewer data="[[data]]" border-color="[[borderColor]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var data = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#colors');
+          viewer.data = data;
+          viewer.borderColor = '0x98FF00';
 
         </script>
 

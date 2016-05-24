@@ -111,6 +111,12 @@
           observer: '_flipColumnsChanged'
         },
 
+        borderColor: {
+          type: String,
+          value: '0xFF9800',
+          observer: '_borderColorChanged'
+        }
+
       },
 
       _seriesChanged: function( evt ){
@@ -131,13 +137,14 @@
         this.stack = this.series[0].stack[0];
         this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
         this.stackHelper.orientation = this.orientation;
+        // issue there, auto compute middle slice or just rely on this.index?
         this._setupIndex();
 
         // tune bounding box
         this.stackHelper.bbox.visible = false;
 
         //tune slice border
-        this.stackHelper.border.color = 0xFF9800;
+        this.stackHelper.border.color = this.borderColor;
         //stackHelper.border.visible = false;
 
         this.scene.add(this.stackHelper);
@@ -308,7 +315,9 @@
       _indexChanged: function( evt ){
 
         if( !this.stackHelper ){
+
           return;
+
         }
 
         this.stackHelper.index = this.index;
@@ -335,6 +344,20 @@
         }
 
         this.camera.invertColumns();
+      },
+
+      _borderColorChanged: function( evt ){
+
+        if( !this.stackHelper ){
+
+          return;
+
+        }
+
+        window.console.log(this.borderColor);
+
+        this.stackHelper.border.color = this.borderColor;
+
       }
 
     });
