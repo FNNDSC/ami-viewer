@@ -1,7 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../ami-loader/ami-loader.html">
-
 <dom-module id="ami-viewer">
   <template>
     <style>
@@ -21,8 +19,6 @@
 
     </style>
 
-    <ami-loader id="#loader" data="{{data}}" series="{{series}}"></ami-loader>
-
     <div id="container"></div>
 
   </template>
@@ -33,11 +29,6 @@
       is: 'ami-viewer',
 
       properties: {
-
-        data: {
-          type: Array,
-          value: []
-        },
 
         series: {
           type: Array,

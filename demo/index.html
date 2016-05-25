@@ -9,6 +9,8 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
 
+    <link rel="import" href="../../ami-loader/ami-loader.html">
+
     <link rel="import" href="../ami-viewer.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -28,17 +30,21 @@
       <demo-snippet>
 
         <template is="dom-bind" id="viewer">
-          <ami-viewer data="[[data]]" orientation="[[orientation]]" index="[[index]]" flip-rows="[[flipRows]]" flip-columns="[[flipColumns]]"> </ami-viewer>
+          <ami-loader id="#loader" urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" orientation="[[orientation]]" index="[[index]]" flip-rows="[[flipRows]]" flip-columns="[[flipColumns]]"> </ami-viewer>
+
         </template>
+
 
         <script>
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
-          var data = t2.map(function(v) {
+          var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
           var viewer = document.querySelector('#viewer');
-          viewer.data = data;
+          viewer.urls = urls;
 
         </script>
 
@@ -50,17 +56,19 @@
       <demo-snippet>
 
         <template is="dom-bind" id="index">
-          <ami-viewer data="[[data]]" index="[[index]]"> </ami-viewer>
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" index="[[index]]"> </ami-viewer>
         </template>
 
         <script>
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
-          var data = t2.map(function(v) {
+          var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
           var viewer = document.querySelector('#index');
-          viewer.data = data;
+          viewer.urls = urls;
           viewer.index = 2;
 
         </script>
@@ -73,17 +81,19 @@
       <demo-snippet>
 
         <template is="dom-bind" id="orientation">
-          <ami-viewer data="[[data]]" orientation="[[orientation]]"> </ami-viewer>
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" orientation="[[orientation]]"> </ami-viewer>
         </template>
 
         <script>
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
-          var data = t2.map(function(v) {
+          var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
           var viewer = document.querySelector('#orientation');
-          viewer.data = data;
+          viewer.urls = urls;
           viewer.orientation = 1;
 
         </script>
@@ -96,17 +106,19 @@
       <demo-snippet>
 
         <template is="dom-bind" id="flips">
-          <ami-viewer data="[[data]]" flip-rows="flipRows" flip-columns="flipColumns"> </ami-viewer>
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" flip-rows="flipRows" flip-columns="flipColumns"> </ami-viewer>
         </template>
 
         <script>
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
-          var data = t2.map(function(v) {
+          var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
           var viewer = document.querySelector('#flips');
-          viewer.data = data;
+          viewer.urls = urls;
           viewer.flipRows = true;
           viewer.flipColumns = false;
 
@@ -120,17 +132,19 @@
       <demo-snippet>
 
         <template is="dom-bind" id="colors">
-          <ami-viewer data="[[data]]" border-color="[[borderColor]]"> </ami-viewer>
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" border-color="[[borderColor]]"> </ami-viewer>
         </template>
 
         <script>
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
-          var data = t2.map(function(v) {
+          var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
           var viewer = document.querySelector('#colors');
-          viewer.data = data;
+          viewer.urls = urls;
           viewer.borderColor = '#98FF00';
 
         </script>
@@ -143,17 +157,19 @@
       <demo-snippet>
 
         <template is="dom-bind" id="angle">
-          <ami-viewer data="[[data]]" angle="[[angle]]"> </ami-viewer>
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" angle="[[angle]]"> </ami-viewer>
         </template>
 
         <script>
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
-          var data = t2.map(function(v) {
+          var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
           });
 
           var viewer = document.querySelector('#angle');
-          viewer.data = data;
+          viewer.urls = urls;
           viewer.angle = 66;
 
         </script>
