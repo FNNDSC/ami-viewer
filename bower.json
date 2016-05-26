@@ -4,9 +4,10 @@
   "main": "ami-viewer.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "ami-loader": "FNNDSC/ami-loader#master"
+    "ami-js": "NicolasRannou/ami-js#master"
   },
   "devDependencies": {
+    "ami-loader": "FNNDSC/ami-loader#master",
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
     "web-component-tester": "^4.0.0",
