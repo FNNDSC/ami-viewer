@@ -4,7 +4,7 @@
   "main": "ami-viewer.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "ami-js": "NicolasRannou/ami-js#master"
+    "ami-import": "NicolasRannou/ami-import#master"
   },
   "devDependencies": {
     "ami-loader": "FNNDSC/ami-loader#master",
