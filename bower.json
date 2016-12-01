@@ -3,8 +3,8 @@
   "description": "Visualize medical imaging data",
   "main": "ami-viewer.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0",
-    "ami-import": "NicolasRannou/ami-import#master"
+    "polymer": "Polymer/polymer#^1.7.0",
+    "ami-import": "NicolasRannou/ami-import#^0.0.11"
   },
   "devDependencies": {
     "ami-loader": "FNNDSC/ami-loader#master",
