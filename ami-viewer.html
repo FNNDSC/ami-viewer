@@ -144,6 +144,9 @@ AMI Viewer element!
 
         }
 
+        // remove previous stack from the scene
+        this.scene.remove(this.stackHelper);
+
         // create helper!
         this.stack = this.series[0].stack[0];
         this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
