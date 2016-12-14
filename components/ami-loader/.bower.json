@@ -1,0 +1,25 @@
+{
+  "name": "ami-loader",
+  "description": "Load medical imaging data and organize it in series/stack/frame",
+  "main": "ami-loader.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.7.0",
+    "ami-import": "NicolasRannou/ami-import#^v0.0.12"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/FNNDSC/ami-loader",
+  "_release": "2c6525fcb0",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2c6525fcb0820d33f6f14b5d50a425b648944874"
+  },
+  "_source": "https://github.com/FNNDSC/ami-loader.git",
+  "_target": "master",
+  "_originalSource": "FNNDSC/ami-loader"
+}

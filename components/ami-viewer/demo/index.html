@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ami-viewer demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../../ami-loader/ami-loader.html">
+
+    <link rel="import" href="../ami-viewer.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+
+      ami-viewer{
+
+        height: 300px;
+        width:100%;
+
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Basic ami-viewer Demo</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="viewer">
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]"> </ami-viewer>
+
+        </template>
+
+
+        <script>
+          
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#viewer');
+          viewer.urls = urls;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Index</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="index">
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" index="[[index]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#index');
+          viewer.urls = urls;
+          viewer.index = 2;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Orientation</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="orientation">
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" orientation="[[orientation]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#orientation');
+          viewer.urls = urls;
+          viewer.orientation = 'coronal';
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Flip rows and columns</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="flips">
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" flip-rows="flipRows" flip-columns="flipColumns"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#flips');
+          viewer.urls = urls;
+          viewer.flipRows = true;
+          viewer.flipColumns = false;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Border color</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="colors">
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" border-color="[[borderColor]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#colors');
+          viewer.urls = urls;
+          viewer.borderColor = '#98FF00';
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Angle</h3>
+      <demo-snippet>
+
+        <template is="dom-bind" id="angle">
+          <ami-loader urls="{{urls}}" series="{{series}}"></ami-loader>
+
+          <ami-viewer series="[[series]]" angle="[[angle]]"> </ami-viewer>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map(function(v) {
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+          });
+
+          var viewer = document.querySelector('#angle');
+          viewer.urls = urls;
+          viewer.angle = 66;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+  </body>
+</html>

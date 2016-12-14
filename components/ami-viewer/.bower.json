@@ -1,0 +1,27 @@
+{
+  "name": "ami-viewer",
+  "description": "Visualize medical imaging data",
+  "main": "ami-viewer.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.7.0",
+    "ami-import": "NicolasRannou/ami-import#^0.0.12"
+  },
+  "devDependencies": {
+    "ami-loader": "FNNDSC/ami-loader#master",
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/fnndsc/ami-viewer",
+  "_release": "2e6e371e1b",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2e6e371e1b107442a604935991927019f5005be1"
+  },
+  "_source": "https://github.com/fnndsc/ami-viewer.git",
+  "_target": "master",
+  "_originalSource": "fnndsc/ami-viewer",
+  "_direct": true
+}

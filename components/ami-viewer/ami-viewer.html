@@ -1,0 +1,386 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../ami-import/ami-import.html">
+
+<!--
+AMI Viewer element!
+
+`ami-viewer` takes an array of data organized by series/stacks/frames (provided by the [ami-loader](http://fnndsc.github.io/ami-loader) and displays it.
+
+@demo demo/index.html
+-->
+
+<dom-module id="ami-viewer">
+  <template>
+    <style>
+
+      :host {
+
+        display: block;
+        position: relative;
+        
+      }
+
+      #container {
+
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+      }
+
+    </style>
+
+    <div id="container"></div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'ami-viewer',
+
+      properties: {
+
+        series: {
+          type: Array,
+          value: [],
+          observer: '_seriesChanged'
+        },
+
+        stack: {
+          type: Object,
+          value: null
+        },
+
+        stackHelper: {
+          type: Object,
+          value: null
+        },
+
+        renderer: {
+          type: Object,
+          value: null
+        },
+
+        scene: {
+          type: Object,
+          value: null
+        },
+
+        camera: {
+          type: Object,
+          value: null
+        },
+
+        init: {
+          type: Boolean,
+          value: false
+        },
+
+        animationFrameID :{
+          type: Number,
+          value: -1
+        },
+
+        orientation: {
+          type: String,
+          value: 'default',
+          observer: '_orientationChanged'
+        },
+
+        index: {
+          type: Number,
+          value: 0,
+          notify: true,
+          observer: '_indexChanged'
+        },
+
+        indexMax: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+
+        flipRows: {
+          type: Boolean,
+          value: false,
+          observer: '_flipRowsChanged'
+        },
+
+        flipColumns: {
+          type: Boolean,
+          value: false,
+          observer: '_flipColumnsChanged'
+        },
+
+        borderColor: {
+          type: String,
+          value: '#FF9800',
+          observer: '_borderColorChanged'
+        },
+
+        angle: {
+          type: Number,
+          value: 0,
+          notify: true,
+          observer: '_angleChanged'
+        }
+
+      },
+
+      _seriesChanged: function( evt ){
+
+        if( !this.series || this.series.length <= 0){
+
+          return;
+
+        }
+
+        if( !this.init){
+
+          this._init();
+
+        }
+
+        // remove previous stack from the scene
+        this.scene.remove(this.stackHelper);
+
+        // create helper!
+        this.stack = this.series[0].stack[0];
+        this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
+        
+        // tune bounding box
+        this.stackHelper.bbox.visible = false;
+
+        //tune slice border
+        this.stackHelper.border.color = this.borderColor;
+
+        this.scene.add(this.stackHelper);
+
+        this._setupCamera();
+        this.stackHelper.orientation = this.camera.stackOrientation;
+        this._setupIndex();
+
+        // flips
+        if( this.flipRows ){
+
+          this.camera.invertRows();
+
+        }
+
+        if( this.flipColumns ){
+
+          this.camera.invertColumns();
+
+        }
+
+      },
+
+      _init: function( ){
+
+        // init the renderer
+        this.renderer = new THREE.WebGLRenderer({
+          antialias: true
+        });
+        this.renderer.setSize(this.$.container.offsetWidth, this.$.container.offsetHeight);
+        this.renderer.setClearColor(0x353535, 1);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.$.container.appendChild(this.renderer.domElement);
+
+        // init the scene
+        this.scene = new THREE.Scene();
+
+        // init the camera
+        this.camera = new AMI.default.Cameras.Orthographic(this.$.container.clientWidth / -2, this.$.container.clientWidth / 2, this.$.container.clientHeight / 2, this.$.container.clientHeight / -2, 0.1, 10000);
+
+        // init the controls
+        this.controls = new AMI.default.Controls.TrackballOrtho(this.camera, this.$.container);
+        this.controls.staticMoving = true;
+        this.controls.noRotate = true;
+        this.camera.controls = this.controls;
+
+        // event listeners
+        this._onWindowResize = this._onWindowResize.bind(this);
+        window.addEventListener('resize', this._onWindowResize, false);
+
+        this.init = true;
+        this.animate();
+      },
+
+      animate: function( ){
+
+        this.animationFrameID = window.requestAnimationFrame( this.animate.bind(this) );
+
+        this.controls.update();
+        this.renderer.render( this.scene, this.camera );
+
+      },
+
+      _onWindowResize: function( evt){
+      
+        this.camera.canvas = {
+          width: this.$.container.clientWidth,
+          height: this.$.container.clientHeight
+        };
+
+        this.camera.fitBox(2);
+
+        this.renderer.setSize(this.$.container.clientWidth, this.$.container.clientHeight);
+
+      },
+
+      _orientationChanged: function( evt ){
+
+        console.log( this.orientation );
+
+        if( !( this.orientation === 'free'     ||
+               this.orientation === 'default'  ||
+               this.orientation === 'axial'    ||
+               this.orientation === 'coronal'  ||
+               this.orientation === 'sagittal' ) ){
+
+          window.console.warn('invalid orientation: ' + this.orientation);
+          window.console.warn('setting orientation to "default"');
+          this.orientation = 'default';
+
+        }
+
+        if( !this.stackHelper ){
+
+          return;
+
+        }
+
+        console.log( this.orientation );
+
+        this._setupCamera();
+
+        console.log( this.camera.stackOrientation );
+        this.stackHelper.orientation = this.camera.stackOrientation;
+        this._setupIndex();
+
+      },
+
+      _setupIndex: function(){
+
+        var max = 0;
+        var dimensionsIJK = this.stack.dimensionsIJK;
+
+        switch( this.stackHelper.orientation ){
+          case 0:
+            max = dimensionsIJK.z - 1;
+            break;
+          case 1:
+            max = dimensionsIJK.x - 1;
+            break;
+          case 2:
+            max = dimensionsIJK.y - 1;
+            break;
+          default:
+            // do nothing!
+            break;
+        }
+
+        this.indexMax = max;
+        this.index = Math.floor( this.indexMax/2 );
+        this.stackHelper.index = this.index;
+
+      },
+
+      _setupCamera: function(){
+
+        var worldbb = this.stack.worldBoundingBox();
+        var lpsDims = new THREE.Vector3(
+          worldbb[1] - worldbb[0],
+          worldbb[3] - worldbb[2],
+          worldbb[5] - worldbb[4]
+        );
+
+        // box: {halfDimensions, center}
+        var box = {
+          center: this.stack.worldCenter().clone(),
+          halfDimensions: new THREE.Vector3(lpsDims.x + 10, lpsDims.y + 10, lpsDims.z + 10)
+        };
+
+        // init and zoom
+        var canvas = {
+            width: this.$.container.clientWidth,
+            height: this.$.container.clientHeight
+          };
+
+        this.camera.directions = [this.stack.xCosine, this.stack.yCosine, this.stack.zCosine];
+        this.camera.orientation = this.orientation;
+        this.camera.box = box;
+        this.camera.canvas = canvas;
+        this.camera.update();
+        this.camera.angle = this.angle;
+        this.camera.fitBox(2);
+
+      },
+
+      _indexChanged: function( evt ){
+
+        if( !this.stackHelper ){
+
+          return;
+
+        }
+
+        this.stackHelper.index = this.index;
+        this.index = this.stackHelper.index;
+      },
+
+      _flipRowsChanged: function( evt){
+
+        if( !this.camera ){
+
+          return;
+
+        }
+
+        this.camera.invertRows();
+        this.angle = this.camera.angle;
+      },
+
+      _flipColumnsChanged: function( evt){
+
+        if( !this.camera ){
+
+          return;
+
+        }
+
+        this.camera.invertColumns();
+        this.angle = this.camera.angle;
+      },
+
+      _angleChanged: function( evt){
+
+        if( !this.camera ){
+
+          return;
+
+        }
+
+        this.camera.angle = this.angle;
+      },
+
+      _borderColorChanged: function( evt ){
+
+        if( !this.stackHelper ){
+
+          return;
+
+        }
+
+        window.console.log(this.borderColor);
+
+        this.stackHelper.border.color = this.borderColor;
+
+      }
+
+    });
+  </script>
+</dom-module>

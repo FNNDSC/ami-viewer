@@ -1,0 +1,38 @@
+{
+  "name": "ami-import",
+  "description": "AMI JS Import for Polymer - no goodies, no bundles, nothing else. Just ami.js. (and Three JS of course)",
+  "main": "ami-import.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "three-import": "NicolasRannou/three-import#r81"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/NicolasRannou/ami-import",
+  "authors": [
+    "nicolasrannou <npm.rannou@gmail.com>"
+  ],
+  "keywords": [
+    "web-components",
+    "amijs",
+    "webgl",
+    "ami",
+    "polymer",
+    "import",
+    "volume",
+    "rendering",
+    "medical"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

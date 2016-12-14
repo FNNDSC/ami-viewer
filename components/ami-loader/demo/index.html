@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ami-loader demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../ami-loader.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Load from url</h3>
+
+      <demo-snippet>
+
+        <template is="dom-bind" id="urls">
+          <ami-loader urls="[[urls]]"></ami-loader>
+        </template>
+
+        <script>
+          var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
+          var urls = t2.map( function( v ) {
+
+            return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
+
+          } );
+
+          var loader = document.querySelector( '#urls' );
+          loader.urls = urls;
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Load from file</h3>
+
+      <demo-snippet>
+
+        <input type="file" id="input" multiple>
+        <template is="dom-bind" id="files">
+          <ami-loader files="[[files]]"></ami-loader>
+        </template>
+
+        <script>
+          function attachFiles( evt ){
+
+            var loader = document.querySelector( '#files' );
+
+            // convert files object to an array
+            var files = [];
+            for ( var i = 0; i < evt.target.files.length; i++ ) {
+
+              files.push( evt.target.files[i] );
+
+            }
+
+            loader.files =  files;
+
+          };
+
+          document.querySelector( '#input' ).addEventListener('change', attachFiles, false);
+
+        </script>
+
+      </demo-snippet>
+    </div>
+
+  </body>
+</html>

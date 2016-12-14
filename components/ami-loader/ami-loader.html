@@ -1,0 +1,214 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../ami-import/ami-import.html">
+
+<!--
+AMI Loader element!
+
+`ami-loader` takes an array of urls or files then parse it and returns data organized by series/stacks/frames.
+
+```
+series
+  - series 0
+  - series 1
+    - stack 0
+      - frame 0
+      - frame 1
+      - ...
+    - ...
+  - ...
+```
+
+@demo demo/index.html
+-->
+
+<dom-module id="ami-loader">
+  <script>
+    Polymer({
+
+      is: 'ami-loader',
+
+      properties: {
+
+        /**
+         * Urls to load series from.
+         *
+         */
+        urls: {
+          type: Array,
+          value: [],
+          observer: '_urlsChanged'
+        },
+
+        /**
+         * Files to parse series from.
+         *
+         */
+        files: {
+          type: Array,
+          value: [],
+          observer: '_filesChanged'
+        },
+
+        status: {
+          type: Number,
+          value: 0
+        },
+
+        progress: {
+          type: Number,
+          value: 0
+        },
+
+        loader: {
+          type: Object,
+          value: null
+        },
+
+        series: {
+          type: Array,
+          value: []
+        }
+
+      },
+
+      _loadSequence: function( url ){
+
+        // create the load sequence
+        var self = this;
+
+        return Promise.resolve()
+        // fetch the file
+        .then(function() {
+          return self.loader.fetch(url);
+        })
+        // parse the file
+        .then(function(data) {
+          return self.loader.parse(data);
+        })
+        // update the series container
+        .then(function(series) {
+          self.series.push(series);
+        })
+        .catch(function(error) {
+          window.console.log('oops... something went wrong...');
+          window.console.log(error);
+        });
+
+      },
+
+      _urlsChanged: function( ){
+
+        // prepare the load sequence for each url!
+        if(!this.urls || this.urls.length <= 0){
+
+          return;
+
+        }
+
+        this.loader = new AMI.default.Loaders.Volume();
+        this.series = [];
+
+        var loadSequences = [];
+        var self = this;
+        this.urls.forEach(function(url) {
+          loadSequences.push( self._loadSequence( url ) )
+        });
+
+        // fetch the data!
+        this.startSequences( loadSequences );
+
+      },
+
+      _parseSequence: function( file ){
+
+        // create the load sequence
+        var self = this;
+
+        return Promise.resolve( )
+        // upload the file to browser
+        .then(function() {
+          return new Promise(function(resolve, reject) {
+            var myReader = new FileReader();
+            // should handle errors too...
+            myReader.addEventListener('load', function(e) {
+              resolve(e.target.result);
+            });
+            myReader.readAsArrayBuffer(file);
+          });
+        })
+        // parse the file
+        .then( function( buffer ) {
+
+          var data = {
+            url: file.name,
+            buffer: buffer
+          }
+
+          return self.loader.parse(data);
+
+        })
+        // update the series container
+        .then( function( series ) {
+
+          self.series.push( series );
+
+        })
+        .catch( function( error ) {
+
+          window.console.log( 'oops... something went wrong...' );
+          window.console.log( error );
+
+        } );
+
+      },
+
+      _filesChanged: function( ){
+
+        // prepare the parse sequence for each file!
+        if( !this.files || this.files.length <= 0 ){
+
+          return;
+
+        }
+
+        this.loader = new AMI.default.Loaders.Volume();
+        this.series = [];
+
+        var parseSequences = [];
+        var self = this;
+        this.files.forEach( function( file ) {
+
+          parseSequences.push( self._parseSequence( file ) );
+
+        } );
+
+        this.startSequences( parseSequences );
+
+      },
+
+      startSequences: function( sequences ){
+
+        var self = this;
+        Promise
+          .all( sequences )
+          .then( function( ) {
+
+            // cleanup the loader
+            self.loader.free();
+            self.loader = null;
+
+            // merge duplicate data if any
+             self.series = self.series[0].mergeSeries( self.series );
+
+             // emit series changed event!
+             self.fire( 'series-changed' );
+             self.fire( 'loaded' );
+
+          } );
+
+      }
+
+    } );
+  </script>
+</dom-module>
