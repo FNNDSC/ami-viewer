@@ -85,8 +85,8 @@ AMI Viewer element!
         },
 
         orientation: {
-          type: Number,
-          value: 0,
+          type: String,
+          value: 'default',
           observer: '_orientationChanged'
         },
 
@@ -147,19 +147,18 @@ AMI Viewer element!
         // create helper!
         this.stack = this.series[0].stack[0];
         this.stackHelper = new AMI.default.Helpers.Stack(this.stack);
-        this.stackHelper.orientation = this.orientation;
-        // issue there, auto compute middle slice or just rely on this.index?
-        this._setupIndex();
-
+        
         // tune bounding box
         this.stackHelper.bbox.visible = false;
 
         //tune slice border
         this.stackHelper.border.color = this.borderColor;
-        //stackHelper.border.visible = false;
 
         this.scene.add(this.stackHelper);
+
         this._setupCamera();
+        this.stackHelper.orientation = this.camera.stackOrientation;
+        this._setupIndex();
 
         // flips
         if( this.flipRows ){
@@ -197,6 +196,7 @@ AMI Viewer element!
         this.controls = new AMI.default.Controls.TrackballOrtho(this.camera, this.$.container);
         this.controls.staticMoving = true;
         this.controls.noRotate = true;
+        this.camera.controls = this.controls;
 
         // event listeners
         this._onWindowResize = this._onWindowResize.bind(this);
@@ -230,11 +230,17 @@ AMI Viewer element!
 
       _orientationChanged: function( evt ){
 
-        if( this.orientation < 0 || this.orientation > 2 ){
+        console.log( this.orientation );
 
-          window.console.log('invalid orientation: ' + this.orientation);
-          window.console.log('setting orientation to 0');
-          this.orientation = 0;
+        if( !( this.orientation === 'free'     ||
+               this.orientation === 'default'  ||
+               this.orientation === 'axial'    ||
+               this.orientation === 'coronal'  ||
+               this.orientation === 'sagittal' ) ){
+
+          window.console.warn('invalid orientation: ' + this.orientation);
+          window.console.warn('setting orientation to "default"');
+          this.orientation = 'default';
 
         }
 
@@ -244,17 +250,22 @@ AMI Viewer element!
 
         }
 
-        this.stackHelper.orientation = this.orientation;
-        this._setupIndex();
+        console.log( this.orientation );
+
         this._setupCamera();
+
+        console.log( this.camera.stackOrientation );
+        this.stackHelper.orientation = this.camera.stackOrientation;
+        this._setupIndex();
 
       },
 
       _setupIndex: function(){
+
         var max = 0;
-          
         var dimensionsIJK = this.stack.dimensionsIJK;
-        switch(this.orientation){
+
+        switch( this.stackHelper.orientation ){
           case 0:
             max = dimensionsIJK.z - 1;
             break;
@@ -272,6 +283,7 @@ AMI Viewer element!
         this.indexMax = max;
         this.index = Math.floor( this.indexMax/2 );
         this.stackHelper.index = this.index;
+
       },
 
       _setupCamera: function(){
@@ -284,7 +296,7 @@ AMI Viewer element!
         );
 
         // box: {halfDimensions, center}
-        var bbox = {
+        var box = {
           center: this.stack.worldCenter().clone(),
           halfDimensions: new THREE.Vector3(lpsDims.x + 10, lpsDims.y + 10, lpsDims.z + 10)
         };
@@ -295,33 +307,14 @@ AMI Viewer element!
             height: this.$.container.clientHeight
           };
 
-        var first, second, last;
-
-        if( this.orientation === 0 ){
-
-          first = this.stack.xCosine;
-          second = this.stack.yCosine;
-          last = this.stack.zCosine;
-
-        }
-        else if( this.orientation === 1 ){
-
-          first = this.stack.yCosine;
-          second = this.stack.zCosine;
-          last = this.stack.xCosine;
-
-        }
-        else{
-
-          first = this.stack.zCosine;
-          second = this.stack.xCosine;
-          last = this.stack.yCosine;
-
-        }
-
-        this.camera.init(first, second, last, this.controls, bbox, canvas);
+        this.camera.directions = [this.stack.xCosine, this.stack.yCosine, this.stack.zCosine];
+        this.camera.orientation = this.orientation;
+        this.camera.box = box;
+        this.camera.canvas = canvas;
+        this.camera.update();
         this.camera.angle = this.angle;
         this.camera.fitBox(2);
+
       },
 
       _indexChanged: function( evt ){

@@ -39,6 +39,7 @@
 
 
         <script>
+          
           var t2 = ['36444280', '36444294', '36444308', '36444322', '36444336'];
           var urls = t2.map(function(v) {
             return 'https://cdn.rawgit.com/FNNDSC/data/master/dicom/adi_brain/' + v;
@@ -95,7 +96,7 @@
 
           var viewer = document.querySelector('#orientation');
           viewer.urls = urls;
-          viewer.orientation = 1;
+          viewer.orientation = 'coronal';
 
         </script>
 
