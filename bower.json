@@ -2,6 +2,7 @@
   "name": "ami-viewer",
   "description": "Visualize medical imaging data",
   "main": "ami-viewer.html",
+  "license": "MIT",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.7.0",
     "ami-import": "NicolasRannou/ami-import#^0.0.12"
