@@ -1,5 +1,6 @@
 {
   "name": "ami-viewer",
+  "version": "0.3.0",
   "description": "Visualize medical imaging data",
   "main": "ami-viewer.html",
   "license": "MIT",
